@@ -18,6 +18,9 @@
 
     <title>YT mp3</title>
     <style>
+
+
+
         body {
             font-family: "Segoue", sans-serif;
             line-height: 1.6em;
@@ -164,6 +167,33 @@
             margin: 10px;
             cursor: pointer;
         }
+        @media only screen and (max-width: 600px) {
+          .list-left {
+              float: left;
+              width: 100%;
+          }
+
+          .list-left img {
+            border: 0;
+          }
+
+          .list-right {
+            padding-top: 10px;
+            padding-left: 5px;
+            width: 100%;
+          }
+          #container {
+              width: 100%;
+              background: #fff;
+              margin: auto;
+          }
+          #results{
+            padding-left: 0;
+          }
+          section {
+              padding-left: 0;
+          }
+        }
     </style>
 </head>
 <body>
@@ -206,7 +236,11 @@
         event.preventDefault();
         var ads = document.getElementById("ads");
         var ad = document.getElementById("ad");
-        ads.src = "https://fathomless-refuge-74234.herokuapp.com/?videoId="+ youtube_parser(event.srcElement.href); //youtube_parser(yt.value);
+        if (event.srcElement.href) {
+          ads.src = "https://fathomless-refuge-74234.herokuapp.com/?videoId="+ youtube_parser(event.srcElement.href);
+        } else {
+          ads.src = "https://fathomless-refuge-74234.herokuapp.com/?videoId="+ youtube_parser(event.srcElement.getAttribute('href')); //youtube_parser(yt.value);
+        }
         ad.load();
         ad.play();
     }
@@ -250,7 +284,7 @@
         $(searchField).on('blur', function() {
             if(searchField.val() == '') {
                 $(searchField).animate({
-                    width: '45%'
+                    width: '80%'
                 }, 400, function(){});
                 $(icon).animate({
                     right: '304px'
@@ -401,19 +435,34 @@
         var channelTitle = item.snippet.channelTitle;
         var videoDate = item.snippet.publishedAt;
 
-        // Build output string
-        var output = 	'<li>' +
-            '<div class="list-left">' +
-            '<img src="' + thumb + '">' +
-            '</div>' +
-            '<div class="list-right">' +
-            '<h3><a data-fancybox-type="iframe" class="fancyboxIframe" onclick="onPlay(event)" href="https://youtube.com/embed/' + videoID + '?rel=0">' + title + '</a></h3>' +
-            '<small>By <span class="cTitle">' + channelTitle + '</span> on ' + videoDate + '</small>' +
-            '<p>' + description + '</p>' +
-            '</div>' +
-            '</li>' +
-            '<div class="clearfix"></div>' +
-            '';
+        var screenRes = window.matchMedia("(max-width: 600px)");
+        if (screenRes.matches) {
+          var output = 	'<li>' +
+              '<div class="list-left">' +
+              '<img src="' + thumb + '" onclick="onPlay(event)" href="https://youtube.com/embed/' + videoID + '?rel=0">' +
+              '</div>' +
+              '<div class="list-right">' +
+              '<h3><a data-fancybox-type="iframe" class="fancyboxIframe" onclick="onPlay(event)" href="https://youtube.com/embed/' + videoID + '?rel=0">' + title + '</a></h3>' +
+              '<small>By <span class="cTitle">' + channelTitle + '</span> on ' + videoDate + '</small>' +
+              '</div>' +
+              '</li>' +
+              '<div class="clearfix"></div>' +
+              '';
+        } else {
+          // Build output string
+          var output = 	'<li>' +
+              '<div class="list-left">' +
+              '<img src="' + thumb + '">' +
+              '</div>' +
+              '<div class="list-right">' +
+              '<h3><a data-fancybox-type="iframe" class="fancyboxIframe" onclick="onPlay(event)" href="https://youtube.com/embed/' + videoID + '?rel=0">' + title + '</a></h3>' +
+              '<small>By <span class="cTitle">' + channelTitle + '</span> on ' + videoDate + '</small>' +
+              '<p>' + description + '</p>' +
+              '</div>' +
+              '</li>' +
+              '<div class="clearfix"></div>' +
+              '';
+        }
         return output;
     }
 
